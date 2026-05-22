@@ -50,3 +50,150 @@
         }
 
         /* Responsive Grid for D&D Campaign Cards */
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        /* Individual Campaign Cards */
+        .campaign-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .campaign-card:hover {
+            transform: translateY(-5px);
+            border-color: #fbbf24;
+        }
+
+        .campaign-card h3 {
+            margin: 0 0 10px 0;
+            font-family: 'Cinzel', serif;
+            color: #f8fafc;
+            font-size: 1.3rem;
+        }
+
+        .campaign-card p {
+            margin: 8px 0;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* Live Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .badge.active {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Interactive Buttons */
+        .btn {
+            display: block;
+            text-align: center;
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>DND Adventurer's Hub</h1>
+        <p class="subtitle">Live Campaign Tracker Dashboard</p>
+
+        <div id="loading">Loading your adventures from the realm...</div>
+
+        <div id="campaign-grid" class="campaign-grid"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // 1. Your Real Verified Firebase Database Keys
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqOxn-sFCCOa1koOaDwQumiD8I0h70G-c",
+            authDomain: "d-and-d-campaign-hub.firebaseapp.com",
+            databaseURL: "https://d-and-d-campaign-hub-default-rtdb.firebaseio.com",
+            projectId: "d-and-d-campaign-hub",
+            storageBucket: "d-and-d-campaign-hub.firebasestorage.app",
+            messagingSenderId: "953951157532",
+            appId: "1:953951157532:web:5ec60c759ad8229ea6ced9",
+            measurementId: "G-10KMRSH0HV"
+        };
+
+        // 2. Initialize the Bridge Connection
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 3. Elements to Update on the Screen
+        const campaignGrid = document.getElementById('campaign-grid');
+        const loadingDiv = document.getElementById('loading');
+
+        // 4. Live Listener: Pulls data automatically when your Discord Bot writes it
+        database.ref('campaigns').on('value', (snapshot) => {
+            campaignGrid.innerHTML = ''; // Wipe out old cards to avoid duplication
+            const data = snapshot.val();
+
+            if (data) {
+                loadingDiv.style.display = 'none'; // Hide the loading screen completely
+
+                // Loop through every campaign entry sent by your bot
+                for (let id in data) {
+                    const campaign = data[id];
+
+                    // Reconstruct a visual campaign card HTML format dynamically
+                    const card = document.createElement('div');
+                    card.className = 'campaign-card';
+                    card.innerHTML = `
+                        <h3>🎲 ${campaign.roomName || 'Active Adventure'}</h3>
+                        <p><strong>Dungeon Master:</strong> ${campaign.dm || 'Unknown DM'}</p>
+                        <p><strong>Active Players:</strong> ${campaign.players || '0'}</p>
+                        <div class="badge active">Live Connection</div>
+                        <a href="${campaign.inviteLink || 'https://discord.com'}" target="_blank" class="btn">Join Discord Channel</a>
+                    `;
+                    campaignGrid.appendChild(card);
+                }
+            } else {
+                // If connection is working but database happens to be fully blank
+                loadingDiv.innerText = "The realm is currently quiet. Start a campaign room inside Discord!";
+                loadingDiv.style.color = "#94a3b8";
+            }
+        });
+    </script>
+
+</body>
+</html>
