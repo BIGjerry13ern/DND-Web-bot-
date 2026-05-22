@@ -1,0 +1,13 @@
+{
+  "name": "dnd-multiplayer-bot",
+  "version": "1.0.0",
+  "description": "Discord D&D Platform",
+  "main": "bot.js",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "firebase-admin": "^12.0.0"
+  },
+  "scripts": {
+    "start": "node bot.js"
+  }
+}
