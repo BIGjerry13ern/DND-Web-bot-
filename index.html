@@ -3,68 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D Campaign Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-</head>
-<body>
+    <title>DND Adventurer's Hub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-    <header>
-        <h1>🎲 D&D Adventurer's Hub</h1>
-        <p>Real-time Campaign Monitor</p>
-    </header>
+    <style>
+        /* Modern Dark-Mode & Fantasy Interface Styling */
+        body {
+            background-color: #121824;
+            color: #e2e8f0;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-    <main class="container">
-        <section class="campaign-section">
-            <h2>🛡️ Active Campaigns</h2>
-            <div id="campaigns-list" class="grid">
-                <p>Loading your adventures from the realm...</p>
-            </div>
-        </section>
-    </main>
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
 
-    <script>
-        // === YOUR REAL FIREBASE KEYS LIVE CHIP ===
-        const firebaseConfig = {
-            apiKey: "AIzaSyCqOxn-sFCCOa1koOaDwQumiD8I0h70G-c",
-            authDomain: "d-and-d-campaign-hub.firebaseapp.com",
-            databaseURL: "https://d-and-d-campaign-hub-default-rtdb.firebaseio.com",
-            projectId: "d-and-d-campaign-hub",
-            storageBucket: "d-and-d-campaign-hub.firebasestorage.app",
-            messagingSenderId: "953951157532",
-            appId: "1:953951157532:web:5ec60c759ad8229ea6ced9",
-            measurementId: "G-10KMRSH0HV"
-        };
-        // ===================================
+        /* The Main Headline */
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #fbbf24; /* Fantasy Gold Accent */
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0px 4px 10px rgba(251, 191, 36, 0.2);
+        }
 
-        // Turn on Firebase connection
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        p.subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
 
-        const campaignsList = document.getElementById('campaigns-list');
-        
-        // Listen to our database in real-time
-        db.ref('campaigns').on('value', (snapshot) => {
-            campaignsList.innerHTML = ''; 
-            
-            if (!snapshot.exists()) {
-                campaignsList.innerHTML = '<p>No active campaigns found. Create one using the Discord bot!</p>';
-                return;
-            }
+        /* The Loading Realm Message */
+        #loading {
+            font-size: 1.2rem;
+            color: #10b981; /* Sharp Emerald Green */
+            font-weight: 600;
+            margin-top: 50px;
+            animation: pulse 1.8s infinite ease-in-out;
+        }
 
-            snapshot.forEach((childSnapshot) => {
-                const campaign = childSnapshot.val();
-                const card = document.createElement('div');
-                card.className = 'campaign-card';
-                card.innerHTML = `
-                    <h3>⚔️ ${campaign.title || 'Unnamed Campaign'}</h3>
-                    <p><strong>DM ID:</strong> ${campaign.ownerId || 'Unknown DM'}</p>
-                    <p class="date">Launched: ${campaign.createdAt ? new Date(campaign.createdAt).toLocaleDateString() : 'Unknown Date'}</p>
-                `;
-                campaignsList.appendChild(card);
-            });
-        });
-    </script>
-</body>
-</html>
+        /* Responsive Grid for D&D Campaign Cards */
