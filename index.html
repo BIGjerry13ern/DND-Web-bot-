@@ -25,15 +25,16 @@
     </main>
 
     <script>
-        // === YOUR KEYS GO HERE IN STEP 4 ===
+        // === YOUR LIVE FIREBASE KEYS ===
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "PASTE_YOUR_DATABASE_URL_HERE",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCqOxn-sFCCOa1koOaDwQumiD8I0h70G-c",
+            authDomain: "d-and-d-campaign-hub.firebaseapp.com",
+            databaseURL: "https://d-and-d-campaign-hub-default-rtdb.firebaseio.com",
+            projectId: "d-and-d-campaign-hub",
+            storageBucket: "d-and-d-campaign-hub.firebasestorage.app",
+            messagingSenderId: "953951157532",
+            appId: "1:953951157532:web:5ec60c759ad8229ea6ced9",
+            measurementId: "G-10KMRSH0HV"
         };
         // ===================================
 
@@ -57,9 +58,9 @@
                 const card = document.createElement('div');
                 card.className = 'campaign-card';
                 card.innerHTML = `
-                    <h3>⚔️ ${campaign.title}</h3>
-                    <p><strong>DM ID:</strong> ${campaign.ownerId}</p>
-                    <p class="date">Launched: ${new Date(campaign.createdAt).toLocaleDateString()}</p>
+                    <h3>⚔️ ${campaign.title || 'Unnamed Campaign'}</h3>
+                    <p><strong>DM ID:</strong> ${campaign.ownerId || 'Unknown DM'}</p>
+                    <p class="date">Launched: ${campaign.createdAt ? new Date(campaign.createdAt).toLocaleDateString() : 'Unknown Date'}</p>
                 `;
                 campaignsList.appendChild(card);
             });
