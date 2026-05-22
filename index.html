@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Campaign Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>🎲 D&D Adventurer's Hub</h1>
+        <p>Real-time Campaign Monitor</p>
+    </header>
+
+    <main class="container">
+        <section class="campaign-section">
+            <h2>🛡️ Active Campaigns</h2>
+            <div id="campaigns-list" class="grid">
+                <p>Loading your adventures from the realm...</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // === YOUR KEYS GO HERE IN STEP 4 ===
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "PASTE_YOUR_DATABASE_URL_HERE",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // ===================================
+
+        // Turn on Firebase connection
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const campaignsList = document.getElementById('campaigns-list');
+        
+        // Listen to our database in real-time
+        db.ref('campaigns').on('value', (snapshot) => {
+            campaignsList.innerHTML = ''; 
+            
+            if (!snapshot.exists()) {
+                campaignsList.innerHTML = '<p>No active campaigns found. Create one using the Discord bot!</p>';
+                return;
+            }
+
+            snapshot.forEach((childSnapshot) => {
+                const campaign = childSnapshot.val();
+                const card = document.createElement('div');
+                card.className = 'campaign-card';
+                card.innerHTML = `
+                    <h3>⚔️ ${campaign.title}</h3>
+                    <p><strong>DM ID:</strong> ${campaign.ownerId}</p>
+                    <p class="date">Launched: ${new Date(campaign.createdAt).toLocaleDateString()}</p>
+                `;
+                campaignsList.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
